@@ -1,0 +1,35 @@
+syntax = "proto3";
+package proto;
+
+import "google/api/annotations.proto";
+
+service SampleService {
+  rpc GetSample(Sample) returns (Sample) {
+    option (google.api.http) = {
+      post: "/v1/sample/body"
+      body: "*"
+      additional_bindings {
+        post: "/v1/sample/partbody"
+        body: "sub"
+      }
+      additional_bindings {
+        get: "/v1/sample/path/{id}/{sub.id}"
+      }
+      additional_bindings {
+        post: "/v1/sample/partbody/{id}/{sub.id}"
+        body: "sub"
+      }
+    };
+  }
+}
+
+message Sample {
+  int32 id = 1;
+  string name = 2;
+  
+  message Sub {
+    int32 id = 1;
+    string name = 2;
+  }
+  Sub sub = 3;
+}
